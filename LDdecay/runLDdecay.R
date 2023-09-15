@@ -1,66 +1,278 @@
-# /usr/bin/env R
-source("LDdecay_functions.R")
+# LDdecay curves for the giraffe populations
 
-#Load libraries
+# description https://github.com/aalbrechtsen/LDdecay
+# https://htmlpreview.github.io/?https://github.com/aalbrechtsen/LDdecay/blob/master/LDdecay-exported.html
+
+DATA=data
+
+# PLINK v1.90b6
+
+# thin data to reduce comp time
+plink --bfile $DATA --thin 0.1 --chr 1 --out chr1 --make-bed
+
 library(Relate)
+#BiocManager::install("snpStats")
 library(snpStats)
+source("/home/albrecht/Rfun/LDdecay.R")
+
 if(FALSE){
+    #to install
     library(devtools)
     install_github("aalbrechtsen/relate")
 }
 
-#pl <- plink
+plink<-
+function(plinkFile){
+    pl <- snpStats::read.plink(plinkFile)
+    ind<-pl$fam[,1]
+    snp<-pl$map[,2]
+    geno<-as.integer(as.integer(pl$genotypes)-1)
+    dim(geno)<-c(length(ind),length(snp))
+    geno[geno==-1]<-NA
+    rownames(geno)<-ind
+    colnames(geno)<-colnames(pl)
+    bim<-read.table(paste0(plinkFile,".bim"),as.is=T,header=F)
+    fam<-read.table(paste0(plinkFile,".fam"),as.is=T,header=F)
+    list(geno=geno,bim=bim,fam=fam,pl=pl)
+}
 
-#Plotting colours
-cols <- c("Ghana"="#4E052D","Togo"="#7d064a","Nigeria"="#cb1a7e","Cameroon"="#F359A1","Eq Guinea"="#F89AA6","Gabon"="#FCB85F","DR Congo"="#D0E25A","Uganda"="#09C189","Ethiopia"="#0F8964","Tanzania"="#5DD9E4","Zimbabwe"="#40A0D8","South Africa"="#1347A2","Madagascar"="#0a1c6c")
+plinkFile <- "/path/to/"
+pl <- plink(plinkFile)
+popInfo <- pl$fam[,2]
+table(popInfo)
 
-#1.Cameroon
-CamgenoAll <- pl$geno[popInfo=="Cameroon",]
-Camgeno <- head(CamgenoAll,5)
-CamRes <- LDdecay(Camgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=2000)
+# smallest sample size Kordofan=4
+# run each pop with n=4
 
-#Calculate LD and plot physical distance in Mb (Max 5 Mb and 75 bins)
-CamBin <- makeBin(CamRes,max=5,n=75)
+#### Nubian n=8
+NUBgenoAll <- pl$geno[popInfo=="Nubian",]
+NUBgeno <- head(NUBgenoAll,4)
+NUBRes <- LDdecay(NUBgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+NUBBin <- makeBin(NUBRes,max=15,n=1000)
 
-#2. Eq_Guinea
-EqGgenoAll <- pl$geno[popInfo=="Eq_Guinea",]
-EqGgeno <- head(EqGgenoAll,8)
-EqGRes <- LDdecay(EqGgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+#### Kordofan n=4
+KORgenoAll <- pl$geno[popInfo=="Kordofan",]
+KORgeno  <- head(KORgenoAll,4)
+KORRes <- LDdecay(KORgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+KORBin <- makeBin(KORRes,max=15,n=1000)
 
-#Calculate LD and plot physical distance in Mb (Max 5 Mb and 75 bins)
-EqGBin <- makeBin(EqGRes,max=5,n=75)
+#### Masai n=6
+MASgenoAll <- pl$geno[popInfo=="Masai",]
+MASgeno <- head(MASgenoAll,4)
+MASRes <- LDdecay(MASgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+MASBin <- makeBin(MASRes,max=15,n=1000)
 
-#3. Madagascar
-MadgenoAll <- pl$geno[popInfo=="Madagascar",]
-Madgeno <- head(MadgenoAll,32)
-MadRes <- LDdecay(Madgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+#### Southern African Central n=8
+SACgenoAll <- pl$geno[popInfo=="Southern_African_Central",]
+SACgeno <- head(SACgenoAll,4)
+SACRes <- LDdecay(SACgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+SACBin <- makeBin(SACRes,max=15,n=1000)
 
-#Calculate LD and plot physical distance in Mb (Max 5 Mb and 75 bins)
-MadBin <- makeBin(MadRes,max=5,n=75)
+#### Angolan n=12
+ANGgenoAll <- pl$geno[popInfo=="Angolan",]
+ANGgeno <- head(ANGgenoAll,4)
+ANGRes <- LDdecay(ANGgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+ANGBin <- makeBin(ANGRes,max=15,n=1000)
 
-#4. Tanzania
-TzgenoAll <- pl$geno[popInfo=="Tanzania",]
-Tzgeno <- head(TzgenoAll,5)
-TzRes <- LDdecay(Tzgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+#### Masai_Selous n=5
+MSEgenoAll <- pl$geno[popInfo=="Masai_Selous",]
+MSEgeno <- head(MSEgenoAll,4)
+MSERes <- LDdecay(MSEgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+MSEBin <- makeBin(MSERes,max=15,n=1000)
 
-#Calculate LD and plot physical distance in Mb (Max 5 Mb and 75 bins)
-TzBin <- makeBin(TzRes,max=5,n=75)
+#### Reticulated n=12
+RECgenoAll <- pl$geno[popInfo=="Reticulated",]
+RECgeno <- head(RECgenoAll,4)
+RECRes <- LDdecay(RECgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+RECBin <- makeBin(RECRes,max=15,n=1000)
 
-#First bin
-CamBin$r2bin[1] <- 0.5
-EqGBin$r2bin[1] <- 0.5
-MadBin$r2bin[1] <- 0.5
-TzBin$r2bin[1] <- 0.5
+#### Masai_Thornicrofts n=5
+MTHgenoAll <- pl$geno[popInfo=="Masai_Thornicrofts",]
+MTHgeno <- head(MTHgenoAll,4)
+MTHRes <- LDdecay(MTHgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+MTHBin <- makeBin(MTHRes,max=15,n=1000)
 
-#Plot
-pdf("LDdecay_n5_5mb_5000depth.pdf", height=6, width=8)
-par(mar = c(5, 5, 5, 5))
-plot(CamBin$seq,CamBin$r2bin,type="l",lwd=5,col="#F359A1",ylab=expression("Mean r"^2),
-    xlab='Distance (Mb)',ylim=c(0.17,0.4),xlim=c(0.01,5),
-    cex.axis = 1.3, cex.lab = 1.3)
-    lines(EqGBin$seq,EqGBin$r2bin,lwd=5,col="#F89AA6")
-    lines(MadBin$seq,MadBin$r2bin,lwd=5,col="#0a1c6c")
-    lines(TzBin$seq,TzBin$r2bin,lwd=5,col="#5DD9E4")
- legend("topright",fill=c("#F359A1","#F89AA6","#0a1c6c","#5DD9E4"),
-     c("Cameroon (n=5)","Eq Guinea (n=5)","Madagascar (n=5)","Tanzania (n=5)"))
+#### Southern_African n=12
+SOAgenoAll <- pl$geno[popInfo=="Southern_African",]
+SOAgeno <- head(SOAgenoAll,4)
+SOARes <- LDdecay(SOAgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+SOABin <- makeBin(SOARes,max=15,n=1000)
+
+#### West_African n=5
+WEAgenoAll <- pl$geno[popInfo=="West_African",]
+WEAgeno <- head(WEAgenoAll,4)
+WEARes <- LDdecay(WEAgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+WEABin <- makeBin(WEARes,max=15,n=1000)
+
+dist <- WEARes$r2[,"pos2"] - WEARes$r2[,"pos1"]
+maxDist <- tapply(dist,WEARes$r2[,"pos1"],max)
+target<- 10.0
+maxDist[maxDist>target] <- target
+pdf("Depth5000_West_African_LDdecay_hist.pdf")
+hist(maxDist,br=100,col="red",
+xlab="Distance (truncated) in Mb", main="West_African")
 dev.off()
+
+#### PLOT ALL TOGETHER ####
+# colors
+Nubian 184, 106, 10 #b86a0a
+Kordofan 225, 146, 20 #e19214
+Masai 118, 29, 70 #761d46
+Southern_African_Central 46, 61, 138 #2e3d8a
+Angolan 23, 30, 62 #171e3e
+Masai_Selous 158, 37, 108 #9e256c
+Reticulated 190, 26, 14 #be1a0e
+Masai_Thornicrofts 174, 108, 168 #ae6ca8
+Southern_African 61, 123, 191 #3d7bbf
+West_African 250, 205, 56 #facd38
+
+# order of labels
+# West- Kordofan - Nubian - Reticulated - Masai - Masai Selous - Masai Thornicroft - 
+# Southern - Southern Central - Angolan
+
+pdf("Depth5000_LDdecay_n4.pdf")
+plot(NUBBin$seq,NUBBin$r2bin,type="l",lwd=3,col='#b86a0a',ylab='mean r2',
+	xlab='distance (Mb)',ylim=c(0,1.0), main='Depth5000_LDdecay_n4')
+ 	lines(KORBin$seq,KORBin$r2bin,lwd=3,col='#e19214')
+ 	lines(MASBin$seq,MASBin$r2bin,lwd=3,col='#761d46')
+	lines(SACBin$seq,SACBin$r2bin,lwd=3,col='#2e3d8a')
+	lines(ANGBin$seq,ANGBin$r2bin,lwd=3,col='#171e3e')
+ 	lines(MSEBin$seq,MSEBin$r2bin,lwd=3,col='#9e256c')
+	lines(RECBin$seq,RECBin$r2bin,lwd=3,col='#be1a0e')
+ 	lines(MTHBin$seq,MTHBin$r2bin,lwd=3,col='#ae6ca8')
+	lines(SOABin$seq,SOABin$r2bin,lwd=3,col='#3d7bbf')
+ 	lines(WEABin$seq,WEABin$r2bin,lwd=3,col='#facd38')
+ legend("topright",fill=c('#facd38','#e19214','#b86a0a','#be1a0e','#761d46',
+ 	'#9e256c','#ae6ca8','#3d7bbf','#2e3d8a','#171e3e'),
+ 	c("West African","Kordofan","Nubian","Reticulated","Masai","Masai Selous",
+ 	"Masai Thornicroft","Southern African","Southern African Central","Angolan"))
+dev.off()
+
+# n=8
+#### Nubian n=8
+NUBgenoAll <- pl$geno[popInfo=="Nubian",]
+NUBgeno <- head(NUBgenoAll,8)
+NUBRes <- LDdecay(NUBgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+NUBBin <- makeBin(NUBRes,max=15,n=1000)
+
+#### Southern African Central n=8
+SACgenoAll <- pl$geno[popInfo=="Southern_African_Central",]
+SACgeno <- head(SACgenoAll,8)
+SACRes <- LDdecay(SACgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+SACBin <- makeBin(SACRes,max=15,n=1000)
+
+#### Angolan n=12
+ANGgenoAll <- pl$geno[popInfo=="Angolan",]
+ANGgeno <- head(ANGgenoAll,8)
+ANGRes <- LDdecay(ANGgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+ANGBin <- makeBin(ANGRes,max=15,n=1000)
+
+#### Reticulated n=12
+RECgenoAll <- pl$geno[popInfo=="Reticulated",]
+RECgeno <- head(RECgenoAll,8)
+RECRes <- LDdecay(RECgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+RECBin <- makeBin(RECRes,max=15,n=1000)
+
+#### Southern_African n=12
+SOAgenoAll <- pl$geno[popInfo=="Southern_African",]
+SOAgeno <- head(SOAgenoAll,8)
+SOARes <- LDdecay(SOAgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+SOABin <- makeBin(SOARes,max=15,n=1000)
+
+pdf("Depth5000_LDdecay_n8.pdf")
+plot(NUBBin$seq,NUBBin$r2bin,type="l",lwd=3,col='#b86a0a',ylab='mean r2',
+	xlab='distance (Mb)',ylim=c(0,1.0), main='Depth5000_LDdecay_n8')
+	lines(SACBin$seq,SACBin$r2bin,lwd=3,col='#2e3d8a')
+	lines(ANGBin$seq,ANGBin$r2bin,lwd=3,col='#171e3e')
+	lines(RECBin$seq,RECBin$r2bin,lwd=3,col='#be1a0e')
+	lines(SOABin$seq,SOABin$r2bin,lwd=3,col='#3d7bbf')
+ legend("topright",fill=c('#b86a0a','#be1a0e','#3d7bbf','#2e3d8a','#171e3e'),
+ 	c("Nubian","Reticulated","Southern African","Southern African Central","Angolan"))
+dev.off()
+
+
+# n=10
+#### Angolan n=12
+#ANGgenoAll <- pl$geno[popInfo=="Angolan",]
+ANGgeno <- head(ANGgenoAll,10)
+ANGRes <- LDdecay(ANGgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+ANGBin <- makeBin(ANGRes,max=15,n=1000)
+
+#### Reticulated n=12
+#RECgenoAll <- pl$geno[popInfo=="Reticulated",]
+RECgeno <- head(RECgenoAll,10)
+RECRes <- LDdecay(RECgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+RECBin <- makeBin(RECRes,max=15,n=1000)
+
+#### Southern_African n=12
+#SOAgenoAll <- pl$geno[popInfo=="Southern_African",]
+SOAgeno <- head(SOAgenoAll,10)
+SOARes <- LDdecay(SOAgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+SOABin <- makeBin(SOARes,max=15,n=1000)
+
+pdf("Depth5000_LDdecay_n10.pdf")
+plot(ANGBin$seq,ANGBin$r2bin,type="l",lwd=3,col='#171e3e',ylab='mean r2',
+	xlab='distance (Mb)',ylim=c(0,1.0), main='Depth5000_LDdecay_n10')
+	lines(RECBin$seq,RECBin$r2bin,lwd=3,col='#be1a0e')
+	lines(SOABin$seq,SOABin$r2bin,lwd=3,col='#3d7bbf')
+ legend("topright",fill=c('#be1a0e','#3d7bbf','#171e3e'),
+ 	c("Reticulated","Southern African","Angolan"))
+dev.off()
+
+# only angolan. masai selous and reticulated
+
+#### Angolan n=12
+ANGgenoAll <- pl$geno[popInfo=="Angolan",]
+ANGgeno <- head(ANGgenoAll,5)
+ANGRes <- LDdecay(ANGgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+ANGBin <- makeBin(ANGRes,max=15,n=1000)
+
+#### Masai_Selous n=5
+MSEgenoAll <- pl$geno[popInfo=="Masai_Selous",]
+MSEgeno <- head(MSEgenoAll,5)
+MSERes <- LDdecay(MSEgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+MSEBin <- makeBin(MSERes,max=15,n=1000)
+
+#### Reticulated n=12
+RECgenoAll <- pl$geno[popInfo=="Reticulated",]
+RECgeno <- head(RECgenoAll,5)
+RECRes <- LDdecay(RECgeno,pos=pl$bim[,4]/1e6,chr=pl$bim[,1],maf=0.05,mis=0.01,depth=5000)
+RECBin <- makeBin(RECRes,max=15,n=1000)
+
+
+#### PLOT ALL TOGETHER ####
+# colors
+Nubian 184, 106, 10 #b86a0a
+Kordofan 225, 146, 20 #e19214
+Masai 118, 29, 70 #761d46
+Southern_African_Central 46, 61, 138 #2e3d8a
+Angolan 23, 30, 62 #171e3e
+Masai_Selous 158, 37, 108 #9e256c
+Reticulated 190, 26, 14 #be1a0e
+Masai_Thornicrofts 174, 108, 168 #ae6ca8
+Southern_African 61, 123, 191 #3d7bbf
+West_African 250, 205, 56 #facd38
+
+# order of labels
+# West- Kordofan - Nubian - Reticulated - Masai - Masai Selous - Masai Thornicroft - 
+# Southern - Southern Central - Angolan
+
+pdf("Depth5000_LDdecay_n5_ANG_MSE_REC.pdf")
+plot(ANGBin$seq,ANGBin$r2bin,type="l",lwd=3,col='#b86a0a',ylab='mean r2',
+	xlab='distance (Mb)',ylim=c(0,1.0), main='Depth5000_LDdecay_n5')
+ #	lines(KORBin$seq,KORBin$r2bin,lwd=3,col='#e19214')
+# 	lines(MASBin$seq,MASBin$r2bin,lwd=3,col='#761d46')
+#	lines(SACBin$seq,SACBin$r2bin,lwd=3,col='#2e3d8a')
+	lines(ANGBin$seq,ANGBin$r2bin,lwd=3,col='#171e3e')
+ 	lines(MSEBin$seq,MSEBin$r2bin,lwd=3,col='#9e256c')
+	lines(RECBin$seq,RECBin$r2bin,lwd=3,col='#be1a0e')
+ #	lines(MTHBin$seq,MTHBin$r2bin,lwd=3,col='#ae6ca8')
+#	lines(SOABin$seq,SOABin$r2bin,lwd=3,col='#3d7bbf')
+ #	lines(WEABin$seq,WEABin$r2bin,lwd=3,col='#facd38')
+ legend("topright",fill=c('#be1a0e',
+ 	'#9e256c','#171e3e'),
+ 	c("Reticulated","Masai Selous",
+"Angolan"))
+dev.off()
+
+# END
