@@ -1,39 +1,34 @@
 #!/bin/bash
-file=$1 #plink filename without .bed
-num=$2  #number of iterations
-P=$3 #number of threads
-out=$4 #output directory (no /)
+
+file=$1 #input beagle file
+nfile=$2 #file name 
+num=$3  #maximum number of iterations
+P=$4 #number of threads/cores used
 K=$5 #number of populations
-bfile=`basename $file`
-echo num = $num
-echo p = $P
-echo out = $out
-echo K = $K
-if [ -f $file.bed ]
-then
-   echo file = $file
-else
-   echo File $file.bed does not exist.
-fi
+NGSA=$6 - #NGSadmix path
 
-touch $out/$bfile.$K.likes.tmp
-rm $out/$bfile.$K.likes.tmp
+out=$out/$K #output directory
 
-for f in `seq 1 $num`
-        do
-    echo -n -e $f"\t" >> $out/$bfile.$K.likes.tmp
-    admixture $file.bed $K -s $f -j$P > $out/$bfile.$K.log_$f
-    mv $bfile.$K.Q $out/$bfile.$K.Q_$f
-    mv $bfile.$K.P $out/$bfile.$K.P_$f
-    grep ^Loglikelihood $out/$bfile.$K.log_$f | cut -f2 -d" " >> $out/$bfile.$K.likes.tmp
-    CONV=`Rscript -e "r<-read.table('$out/$bfile.$K.likes.tmp');r<-r[order(-r[,2]),];cat(sum(r[1,2]-r[,2]<5),'\n')"`
+mkdir -p $out
 
-    if [ $CONV -gt 2 ]
+for f in `seq $num`
+do
+    echo -n -e $f"\t"
+    echo $file
+    echo $K
+    #Run NGSadmix
+    $NGSA -minMaf 0.05 -likes $file -seed $f -K $K -P $P -printInfo 1 -o $out/$nfile.$K.$f
+    grep "like=" $out/$nfile.$K.$f.log | cut -f2 -d " " | cut -f2 -d "=" >> $out/$nfile.$K.likes
+    #Convergence criteria - #r = 10* no. of millions of SNPs
+    CONV=`Rscript -e "r<-read.table('$out/$nfile.$K.likes');r<-r[order(-r[,1]),];cat(sum(r[1]-r<148),'\n')"` 
+
+    #Check convergence
+    if [ $CONV -gt 2 ]  # 3 files meeting convergence criteria
     then
-        cp $out/$bfile.$K.Q_$f $out/$bfile.$K.Q_conv
-        cp $out/$bfile.$K.P_$f $out/$bfile.$K.P_conv
-        cp $out/$bfile.$K.log_$f $out/$bfile.$K.log_conv
-        break
-        fi
+	cp $out/$nfile.$K.$f.qopt $out/$nfile.$K.$f.qopt_conv
+	cp $out/$nfile.$K.$f.fopt.gz $out/$nfile.$K.$f.fopt_conv.gz
+	cp $out/$nfile.$K.$f.log $out/$nfile.$K.$f.log_conv
+	break
+    fi
+
 done
-cat $out/$bfile.$K.likes.tmp | sort -k2 -n -r > $out/$bfile.$K.likes
