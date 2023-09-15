@@ -1,0 +1,128 @@
+outmain: "202301_simCovOkapi_9ind.sitefilters.results"
+scriptsdir: "scripts"
+mu: 2.1e-08
+g: 10
+bcf: "/davidData/malthe/africa/gt/results/giraffe_joint/vcf/Okapi_joint_sites_nomultiallelics_noindels_10dp_2het.bcf.gz"
+
+outgroups:
+ - AAmeUsWghorn
+ - OJohCaPanley
+ - OJohCaP_WOAK
+
+close_outgroup:
+ - OJohCaP_WOAK
+
+do_tto:
+ GCamNeWWA720-GCamBwN__573:
+  - GCamNeWWA720
+  - GCamBwN__573
+
+do_tt:
+ GCamNeWWA720-GCamBwN__573:
+  - GCamNeWWA720
+  - GCamBwN__573
+ GCamNeWWA720-GCamUgN_1236:
+  - GCamNeWWA720
+  - GCamUgN_1236
+ GCamNeWWA720-GCamKeC_7731:
+  - GCamNeWWA720
+  - GCamKeC_7731
+ GCamNeWWA720-GCamCdEGNP05:
+  - GCamNeWWA720
+  - GCamCdEGNP05
+ GCamNeWWA720-GCamZwS_1551:
+  - GCamNeWWA720
+  - GCamZwS_1551
+ GCamNeWWA720-GCamTzESGR13:
+  - GCamNeWWA720
+  - GCamTzESGR13
+ GCamNeWWA720-GCamNaN_2310:
+  - GCamNeWWA720
+  - GCamNaN_2310
+ GCamNeWWA720-GCamTzC_9109:
+  - GCamNeWWA720
+  - GCamTzC_9109
+ GCamBwN__573-GCamUgN_1236:
+  - GCamBwN__573
+  - GCamUgN_1236
+ GCamBwN__573-GCamKeC_7731:
+  - GCamBwN__573
+  - GCamKeC_7731
+ GCamBwN__573-GCamCdEGNP05:
+  - GCamBwN__573
+  - GCamCdEGNP05
+ GCamBwN__573-GCamZwS_1551:
+  - GCamBwN__573
+  - GCamZwS_1551
+ GCamBwN__573-GCamTzESGR13:
+  - GCamBwN__573
+  - GCamTzESGR13
+ GCamBwN__573-GCamNaN_2310:
+  - GCamBwN__573
+  - GCamNaN_2310
+ GCamBwN__573-GCamTzC_9109:
+  - GCamBwN__573
+  - GCamTzC_9109
+ GCamUgN_1236-GCamKeC_7731:
+  - GCamUgN_1236
+  - GCamKeC_7731
+ GCamUgN_1236-GCamCdEGNP05:
+  - GCamUgN_1236
+  - GCamCdEGNP05
+ GCamUgN_1236-GCamZwS_1551:
+  - GCamUgN_1236
+  - GCamZwS_1551
+ GCamUgN_1236-GCamTzESGR13:
+  - GCamUgN_1236
+  - GCamTzESGR13
+ GCamUgN_1236-GCamNaN_2310:
+  - GCamUgN_1236
+  - GCamNaN_2310
+ GCamUgN_1236-GCamTzC_9109:
+  - GCamUgN_1236
+  - GCamTzC_9109
+ GCamKeC_7731-GCamCdEGNP05:
+  - GCamKeC_7731
+  - GCamCdEGNP05
+ GCamKeC_7731-GCamZwS_1551:
+  - GCamKeC_7731
+  - GCamZwS_1551
+ GCamKeC_7731-GCamTzESGR13:
+  - GCamKeC_7731
+  - GCamTzESGR13
+ GCamKeC_7731-GCamNaN_2310:
+  - GCamKeC_7731
+  - GCamNaN_2310
+ GCamKeC_7731-GCamTzC_9109:
+  - GCamKeC_7731
+  - GCamTzC_9109
+ GCamCdEGNP05-GCamZwS_1551:
+  - GCamCdEGNP05
+  - GCamZwS_1551
+ GCamCdEGNP05-GCamTzESGR13:
+  - GCamCdEGNP05
+  - GCamTzESGR13
+ GCamCdEGNP05-GCamNaN_2310:
+  - GCamCdEGNP05
+  - GCamNaN_2310
+ GCamCdEGNP05-GCamTzC_9109:
+  - GCamCdEGNP05
+  - GCamTzC_9109
+ GCamZwS_1551-GCamTzESGR13:
+  - GCamZwS_1551
+  - GCamTzESGR13
+ GCamZwS_1551-GCamNaN_2310:
+  - GCamZwS_1551
+  - GCamNaN_2310
+ GCamZwS_1551-GCamTzC_9109:
+  - GCamZwS_1551
+  - GCamTzC_9109
+ GCamTzESGR13-GCamNaN_2310:
+  - GCamTzESGR13
+  - GCamNaN_2310
+ GCamTzESGR13-GCamTzC_9109:
+  - GCamTzESGR13
+  - GCamTzC_9109
+ GCamNaN_2310-GCamTzC_9109:
+  - GCamNaN_2310
+  - GCamTzC_9109
