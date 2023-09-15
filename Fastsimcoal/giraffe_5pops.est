@@ -1,0 +1,33 @@
+// Search ranges and rules file
+// ****************************
+
+[PARAMETERS]
+//#isInt? #name   #dist.#min  #max
+//all Ns are in number of diploid individuals
+1  NW	logunif    200	30000	output
+1  NK	logunif    200	30000	output
+1  NSA	logunif    200	30000	output
+1  NSC	logunif    200	30000	output
+1  NR	logunif    200	30000	output
+1  T1	logunif	100	20000	output
+1  TADD1	logunif 100	30000	output
+1  TADD2	logunif 100	30000	output
+1  TADD3	logunif 100	30000	output
+1  TADD4	logunif 100	30000 output
+1  NANC1	unif    2000	60000   output
+1  NANC2	unif    2000	60000   output
+1  NANC3	unif    2000	100000   output
+1  NANCA	unif    2000	60000    output
+1  NANCB	unif    2000	100000	output
+0	MIGR	unif	0.05	0.95	output bounded 
+
+[COMPLEX PARAMETERS]
+0  FAC1  = NANC1/NSC     output
+0  FAC2  = NANC2/NW     output
+0  FACA  = NANCA/NR    output
+0  FACB  = NANCB/NANC1  output
+0  FAC3  = NANC3/NANCB     output
+1  TA$ = T1 + TADD1 output
+1  T2 = TA$ + TADD2 output
+1  TB = T2 + TADD3 output
+1  T3 = TB + TADD4	output	

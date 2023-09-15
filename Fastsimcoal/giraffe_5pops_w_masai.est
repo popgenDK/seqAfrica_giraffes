@@ -1,0 +1,39 @@
+// Search ranges and rules file
+// ****************************
+
+[PARAMETERS]
+//#isInt? #name   #dist.#min  #max
+//all Ns are in number of diploid individuals
+1  NW	logunif	200	30000	output
+1  NK	logunif	200	30000	output
+1  NR	logunif	200	30000	output
+1  NMA	logunif	200	30000	output
+1  NSC	logunif	200	30000	output
+1  TM1	logunif	100	30000	output
+1  TA1	logunif 100	30000	output
+1  TA2	logunif 100	30000	output
+1  TA3	logunif 100	30000	output
+1  TA4	logunif 100	30000	output
+1  TA5	logunif 100	30000	output
+1  NA1	logunif    2000	100000   output
+1  NA2	logunif    2000	100000   output
+1  NA3	logunif    2000	100000   output
+1  NA4	logunif    2000	100000   output
+1  NA5	logunif    2000	100000   output
+1  NA6	logunif    2000	100000   output
+0	MIGR1	unif	0	0.50	output bounded
+0	MIGR2	unif	0.05	0.95	output bounded 
+
+[COMPLEX PARAMETERS]
+0  FACM1  = NA1/NMA     output
+0  FACM2  = NA2/NR     output
+0  FAC1  = NA3/NW     output
+0  FAC2  = NA4/NA1    output
+0  FACM3 = NA5/NA4	output
+0  FAC3  = NA6/NA3  output
+1  TM2 = TM1 + TA1 output
+1  T1 = TM2 + TA2 output
+1  T2 = TM1 + TA5	output	
+1  TMAX = T2 %max% T1	output
+1  TM3 = TMAX + TA3 output
+1  T3 = TM3 + TA4	output
