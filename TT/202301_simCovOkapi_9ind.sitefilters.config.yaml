@@ -2,20 +2,12 @@ outmain: "202301_simCovOkapi_9ind.sitefilters.results"
 scriptsdir: "scripts"
 mu: 2.1e-08
 g: 10
-bcf: "/davidData/malthe/africa/gt/results/giraffe_joint/vcf/Okapi_joint_sites_nomultiallelics_noindels_10dp_2het.bcf.gz"
+bcf: "$PATH/Okapi_joint_sites_nomultiallelics_noindels_10dp_2het.bcf.gz"
 
 outgroups:
  - AAmeUsWghorn
  - OJohCaPanley
  - OJohCaP_WOAK
-
-close_outgroup:
- - OJohCaP_WOAK
-
-do_tto:
- GCamNeWWA720-GCamBwN__573:
-  - GCamNeWWA720
-  - GCamBwN__573
 
 do_tt:
  GCamNeWWA720-GCamBwN__573:
