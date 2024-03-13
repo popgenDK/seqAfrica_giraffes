@@ -1,4 +1,5 @@
 # seqAfrica_giraffes
 Git repository for the giraffes project at the University of Copenhagen.
 
-This will be updated with the link to the publication upon acceptance.
+Bertola et al., 2024, Giraffe lineages are shaped by major ancient admixture events. Current Biology.
+https://www.cell.com/current-biology/fulltext/S0960-9822(24)00234-3
