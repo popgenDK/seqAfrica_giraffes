@@ -1,0 +1,391 @@
+# -*- mode: Yaml; -*-
+# Default options.
+# Can also be specific for a set of samples, libraries, and lanes,
+# by including the "Options" hierarchy at the same level as those
+# samples, libraries, or lanes below.
+Options:
+  # Sequencing platform, see SAM/BAM reference for valid values
+  Platform: Illumina
+  # Quality offset for Phred scores, either 33 (Sanger/Illumina 1.8+)
+  # or 64 (Illumina 1.3+ / 1.5+). For Bowtie2 it is also possible to
+  # specify 'Solexa', to handle reads on the Solexa scale. This is
+  # used during adapter-trimming and sequence alignment
+  QualityOffset: 33
+
+  # Settings for trimming of reads, see AdapterRemoval man-page
+  AdapterRemoval:
+     # Set and uncomment to override defaults adapter sequences
+     --adapter1: AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA
+     --adapter2: AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG
+     # Some BAM pipeline defaults differ from AR defaults;
+     # To override, change these value(s):
+     --mm: 3
+     --minlength: 1
+     # Extra features enabled by default; change 'yes' to 'no' to disable
+     --collapse:
+     --collapse-conservatively:
+
+  # Settings for aligners supported by the pipeline
+  Aligners:
+    # Choice of aligner software to use, either "BWA" or "Bowtie2"
+    Program: BWA
+
+    # Settings for mappings performed using BWA
+    BWA:
+      # One of "backtrack", "bwasw", or "mem"; see the BWA documentation
+      # for a description of each algorithm (defaults to 'backtrack')
+      Algorithm: mem
+      # Filter aligned reads with a mapping quality (Phred) below this value
+      MinQuality: 0
+      # Filter reads that did not map to the reference sequence
+      FilterUnmappedReads: no
+      # May be disabled ("no") for aDNA alignments with the 'aln' algorithm.
+      # Post-mortem damage localizes to the seed region, which BWA expects to
+      # have few errors (sets "-l"). See http://pmid.us/22574660
+      UseSeed: yes
+      # Additional command-line options may be specified below. For 'backtrack' these
+      # are applied to the "bwa aln". See Bowtie2 for more examples.
+#      -n: 0.04
+
+  # Command-line options for mapDamage; use long-form options(--length not -l):
+  mapDamage:
+    # By default, the pipeline will downsample the input to 100k hits
+    # when running mapDamage; remove to use all hits
+    --downsample: 100000
+
+  # Set to 'yes' exclude a type of trimmed reads from alignment / analysis;
+  # possible read-types reflect the output of AdapterRemoval
+  ExcludeReads:
+    # Exclude single-end reads (yes / no)?
+    Single: no
+    # Exclude non-collapsed paired-end reads (yes / no)?
+    Paired: no
+    # Exclude paired-end reads for which the mate was discarded (yes / no)?
+    Singleton: no
+    # Exclude overlapping paired-ended reads collapsed into a single sequence
+    # by AdapterRemoval (yes / no)?
+    Collapsed: no
+    # Like 'Collapsed', but only for collapsed reads truncated due to the
+    # presence of ambiguous or low quality bases at read termini (yes / no).
+    CollapsedTruncated: no
+
+  # Optional steps to perform during processing.
+  Features:
+    # If set to 'filter', PCR duplicates are removed from the output files; if set to
+    # 'mark', PCR duplicates are flagged with bit 0x400, and not removed from the
+    # output files; if set to 'no', the reads are assumed to not have been amplified.
+    PCRDuplicates: mark
+    # Set to 'no' to disable mapDamage; set to 'plots' to build basic mapDamage plots;
+    # set to 'model' to build plots and post-mortem damage models; and set to 'rescale'
+    # to build plots, models, and BAMs with rescaled quality scores. All analyses are
+    # carried out per library.
+    mapDamage: no
+    # Generate coverage information for the final BAM and for each 'RegionsOfInterest'
+    # specified in 'Prefixes' (yes / no).
+    Coverage: no
+    # Generate histograms of number of sites with a given read-depth, from 0 to 200,
+    # for each BAM and for each 'RegionsOfInterest' specified in 'Prefixes' (yes / no).
+    Depths: no
+    # Generate summary table for each target (yes / no)
+    Summary: no
+
+
+Genomes:
+  Okapi:
+    Path: genomes/Okapi.fasta
+  RothschildsGiraffe:
+    Path: genomes/RothschildsGiraffe.fasta
+
+
+GCamZw___568:
+  GCamZw___568:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080306/FP100002099BR_L01_560_{Pair}.fq.gz"
+
+
+GCam_____569:
+  GCam_____569:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080310/FP100002099BR_L01_564_{Pair}.fq.gz"
+
+
+GCamBwN__573:
+  GCamBwN__573:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280001/FP100002254TL_L01_1_{Pair}.fq.gz"
+
+
+GCamBwN__574:
+  GCamBwN__574:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280002/FP100002254TL_L01_2_{Pair}.fq.gz"
+
+
+GCamBwN__575:
+  GCamBwN__575:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280003/FP100002254TL_L01_3_{Pair}.fq.gz"
+
+
+GCamUgN_1236:
+  GCamUgN_1236:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280014/FP100002253TL_L01_46_{Pair}.fq.gz"
+
+
+GCamZwS_1545:
+  GCamZwS_1545:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280015/FP100002253TL_L01_47_{Pair}.fq.gz"
+
+
+GCamZwS_1546:
+  GCamZwS_1546:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280016/FP100002253TL_L01_48_{Pair}.fq.gz"
+
+
+GCamZwS_1547:
+  GCamZwS_1547:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280017/FP100002253TL_L01_57_{Pair}.fq.gz"
+
+
+GCamZwS_1548:
+  GCamZwS_1548:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280018/FP100002253TL_L01_58_{Pair}.fq.gz"
+
+
+GCamZwS_1549:
+  GCamZwS_1549:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280019/FP100002253TL_L01_59_{Pair}.fq.gz"
+
+
+GCamZwS_1550:
+  GCamZwS_1550:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280020/FP100002253TL_L01_60_{Pair}.fq.gz"
+
+
+GCamZwS_1551:
+  GCamZwS_1551:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280021/FP100002253TL_L01_61_{Pair}.fq.gz"
+
+
+GCamZwS_1552:
+  GCamZwS_1552:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280022/FP100002253TL_L01_62_{Pair}.fq.gz"
+
+
+GCamZwS_1553:
+  GCamZwS_1553:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280023/FP100002253TL_L01_63_{Pair}.fq.gz"
+
+
+GCamZwS_1554:
+  GCamZwS_1554:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080307/FP100002099BR_L01_561_{Pair}.fq.gz"
+
+
+GCamZwS_1555:
+  GCamZwS_1555:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280024/FP100002253TL_L01_64_{Pair}.fq.gz"
+
+
+GCamZwS_1556:
+  GCamZwS_1556:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280025/FP100002254TL_L01_65_{Pair}.fq.gz"
+
+
+GCamZwS_1557:
+  GCamZwS_1557:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080308/FP100002099BR_L01_562_{Pair}.fq.gz"
+
+
+GCamZwS_1558:
+  GCamZwS_1558:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280026/FP100002254TL_L01_66_{Pair}.fq.gz"
+
+
+GCamZwS_1559:
+  GCamZwS_1559:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080309/FP100002099BR_L01_563_{Pair}.fq.gz"
+
+
+GCamBwN_2253:
+  GCamBwN_2253:
+    Library1:
+      FP100001995BR: "data/batch_1.bgi/210210_SEQ011_FP100001995BR_L01_SP2101080288/FP100001995BR_L01_542_{Pair}.fq.gz"
+
+
+GCamNaN_2310:
+  GCamNaN_2310:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280006/FP100002254TL_L01_14_{Pair}.fq.gz"
+
+
+GCamNaN_2318:
+  GCamNaN_2318:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280007/FP100002254TL_L01_15_{Pair}.fq.gz"
+
+
+GCamTzW_3369:
+  GCamTzW_3369:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280011/FP100002253TL_L01_43_{Pair}.fq.gz"
+
+
+GCamKeC_7725:
+  GCamKeC_7725:
+    Library1:
+      FP100001995BR: "data/batch_1.bgi/210210_SEQ011_FP100001995BR_L01_SP2101080289/FP100001995BR_L01_543_{Pair}.fq.gz"
+
+
+GCamKeC_7726:
+  GCamKeC_7726:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280004/FP100002254TL_L01_4_{Pair}.fq.gz"
+
+
+GCamKeC_7727:
+  GCamKeC_7727:
+    Library1:
+      FP100001995BR: "data/batch_1.bgi/210210_SEQ011_FP100001995BR_L01_SP2101080290/FP100001995BR_L01_544_{Pair}.fq.gz"
+
+
+GCamKeC_7728:
+  GCamKeC_7728:
+    Library1:
+      FP100002004BL: "data/batch_1.bgi/210220_SEQ013_FP100002004BL_L01_SP2101080291/FP100002004BL_L01_545_{Pair}.fq.gz"
+
+
+GCamKeC_7729:
+  GCamKeC_7729:
+    Library1:
+      FP100001995BR: "data/batch_1.bgi/210210_SEQ011_FP100001995BR_L01_SP2101080292/FP100001995BR_L01_546_{Pair}.fq.gz"
+
+
+GCamKeC_7730:
+  GCamKeC_7730:
+    Library1:
+      FP100001995BR: "data/batch_1.bgi/210210_SEQ011_FP100001995BR_L01_SP2101080293/FP100001995BR_L01_547_{Pair}.fq.gz"
+
+
+GCamKeC_7731:
+  GCamKeC_7731:
+    Library1:
+      FP100001995BR: "data/batch_1.bgi/210210_SEQ011_FP100001995BR_L01_SP2101080294/FP100001995BR_L01_548_{Pair}.fq.gz"
+
+
+GCamKeC_7733:
+  GCamKeC_7733:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080295/FP100002099BR_L01_549_{Pair}.fq.gz"
+
+
+GCamKeC_7734:
+  GCamKeC_7734:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080296/FP100002099BR_L01_550_{Pair}.fq.gz"
+
+
+GCamKeC_7735:
+  GCamKeC_7735:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280005/FP100002254TL_L01_13_{Pair}.fq.gz"
+
+
+GCamKeW_7737:
+  GCamKeW_7737:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080297/FP100002099BR_L01_551_{Pair}.fq.gz"
+
+
+GCamKeW_7738:
+  GCamKeW_7738:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080298/FP100002099BR_L01_552_{Pair}.fq.gz"
+
+
+GCamNaC_7979:
+  GCamNaC_7979:
+    Library1:
+      FP100002254TL: "data/batch_1.bgi/210223_SEQ011_FP100002254TL_L01_SP2101280008/FP100002254TL_L01_16_{Pair}.fq.gz"
+
+
+GCamNaC_7980:
+  GCamNaC_7980:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280009/FP100002253TL_L01_41_{Pair}.fq.gz"
+
+
+GCamNaC_7981:
+  GCamNaC_7981:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080303/FP100002099BR_L01_557_{Pair}.fq.gz"
+
+
+GCamNaC_7982:
+  GCamNaC_7982:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280010/FP100002253TL_L01_42_{Pair}.fq.gz"
+
+
+GCamKeS_8546:
+  GCamKeS_8546:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080299/FP100002099BR_L01_553_{Pair}.fq.gz"
+
+
+GCamKeS_8547:
+  GCamKeS_8547:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080300/FP100002099BR_L01_554_{Pair}.fq.gz"
+
+
+GCamKeS_8548:
+  GCamKeS_8548:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080301/FP100002099BR_L01_555_{Pair}.fq.gz"
+
+
+GCamTzC_9074:
+  GCamTzC_9074:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280012/FP100002253TL_L01_44_{Pair}.fq.gz"
+
+
+GCamTzC_9108:
+  GCamTzC_9108:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080304/FP100002099BR_L01_558_{Pair}.fq.gz"
+
+
+GCamTzC_9109:
+  GCamTzC_9109:
+    Library1:
+      FP100002253TL: "data/batch_1.bgi/210224_SEQ023_FP100002253TL_L01_SP2101280013/FP100002253TL_L01_45_{Pair}.fq.gz"
+
+
+GCamTzC_9110:
+  GCamTzC_9110:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080305/FP100002099BR_L01_559_{Pair}.fq.gz"
+
+
+GCamKeC_9148:
+  GCamKeC_9148:
+    Library1:
+      FP100002099BR: "data/batch_1.bgi/210130_SEQ021_FP100002099BR_L01_SP2101080302/FP100002099BR_L01_556_{Pair}.fq.gz"

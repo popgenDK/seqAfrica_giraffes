@@ -1,0 +1,393 @@
+# -*- mode: Yaml; -*-
+# Default options.
+# Can also be specific for a set of samples, libraries, and lanes,
+# by including the "Options" hierarchy at the same level as those
+# samples, libraries, or lanes below.
+Options:
+  # Sequencing platform, see SAM/BAM reference for valid values
+  Platform: Illumina
+  # Quality offset for Phred scores, either 33 (Sanger/Illumina 1.8+)
+  # or 64 (Illumina 1.3+ / 1.5+). For Bowtie2 it is also possible to
+  # specify 'Solexa', to handle reads on the Solexa scale. This is
+  # used during adapter-trimming and sequence alignment
+  QualityOffset: 33
+
+  # Settings for trimming of reads, see AdapterRemoval man-page
+  AdapterRemoval:
+     # Set and uncomment to override defaults adapter sequences
+     --adapter1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+     --adapter2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+     # Some BAM pipeline defaults differ from AR defaults;
+     # To override, change these value(s):
+     --mm: 3
+     --minlength: 1
+     # Extra features enabled by default; change 'yes' to 'no' to disable
+     --collapse:
+     --collapse-conservatively:
+
+  # Settings for aligners supported by the pipeline
+  Aligners:
+    # Choice of aligner software to use, either "BWA" or "Bowtie2"
+    Program: BWA
+
+    # Settings for mappings performed using BWA
+    BWA:
+      # One of "backtrack", "bwasw", or "mem"; see the BWA documentation
+      # for a description of each algorithm (defaults to 'backtrack')
+      Algorithm: mem
+      # Filter aligned reads with a mapping quality (Phred) below this value
+      MinQuality: 0
+      # Filter reads that did not map to the reference sequence
+      FilterUnmappedReads: no
+      # May be disabled ("no") for aDNA alignments with the 'aln' algorithm.
+      # Post-mortem damage localizes to the seed region, which BWA expects to
+      # have few errors (sets "-l"). See http://pmid.us/22574660
+      UseSeed: yes
+      # Additional command-line options may be specified below. For 'backtrack' these
+      # are applied to the "bwa aln". See Bowtie2 for more examples.
+#      -n: 0.04
+
+  # Command-line options for mapDamage; use long-form options(--length not -l):
+  mapDamage:
+    # By default, the pipeline will downsample the input to 100k hits
+    # when running mapDamage; remove to use all hits
+    --downsample: 100000
+
+  # Set to 'yes' exclude a type of trimmed reads from alignment / analysis;
+  # possible read-types reflect the output of AdapterRemoval
+  ExcludeReads:
+    # Exclude single-end reads (yes / no)?
+    Single: no
+    # Exclude non-collapsed paired-end reads (yes / no)?
+    Paired: no
+    # Exclude paired-end reads for which the mate was discarded (yes / no)?
+    Singleton: no
+    # Exclude overlapping paired-ended reads collapsed into a single sequence
+    # by AdapterRemoval (yes / no)?
+    Collapsed: no
+    # Like 'Collapsed', but only for collapsed reads truncated due to the
+    # presence of ambiguous or low quality bases at read termini (yes / no).
+    CollapsedTruncated: no
+
+  # Optional steps to perform during processing.
+  Features:
+    # If set to 'filter', PCR duplicates are removed from the output files; if set to
+    # 'mark', PCR duplicates are flagged with bit 0x400, and not removed from the
+    # output files; if set to 'no', the reads are assumed to not have been amplified.
+    PCRDuplicates: mark
+    # Set to 'no' to disable mapDamage; set to 'plots' to build basic mapDamage plots;
+    # set to 'model' to build plots and post-mortem damage models; and set to 'rescale'
+    # to build plots, models, and BAMs with rescaled quality scores. All analyses are
+    # carried out per library.
+    mapDamage: no
+    # Generate coverage information for the final BAM and for each 'RegionsOfInterest'
+    # specified in 'Prefixes' (yes / no).
+    Coverage: no
+    # Generate histograms of number of sites with a given read-depth, from 0 to 200,
+    # for each BAM and for each 'RegionsOfInterest' specified in 'Prefixes' (yes / no).
+    Depths: no
+    # Generate summary table for each target (yes / no)
+    Summary: no
+
+
+Genomes:
+  Okapi:
+    Path: genomes/Okapi.fasta
+  RothschildsGiraffe:
+    Path: genomes/RothschildsGiraffe.fasta
+
+
+
+GCamNeWWA720:
+  GCamNeWWA720:
+    WA720 :
+      SRR11905169: "data/batch_2/SRR11905169_{Pair}.fastq.gz"
+
+
+GCamNeWWA733:
+  GCamNeWWA733:
+    WA733 :
+      SRR11905168: "data/batch_2/SRR11905168_{Pair}.fastq.gz"
+
+
+GCamNeWWA746:
+  GCamNeWWA746:
+    WA746 :
+      SRR11905157: "data/batch_2/SRR11905157_{Pair}.fastq.gz"
+
+
+GCamNeWWA806:
+  GCamNeWWA806:
+    WA806:
+      SRR11905146: "data/batch_2/SRR11905146_{Pair}.fastq.gz"
+
+
+GCamNeWWA808:
+  GCamNeWWA808:
+    WA808:
+      SRR11905135: "data/batch_2/SRR11905135_{Pair}.fastq.gz"
+
+
+GCamCdEGNP01:
+  GCamCdEGNP01:
+    GNP01:
+      SRR11905126: "data/batch_2/SRR11905126_{Pair}.fastq.gz"
+
+
+GCamCdEGNP04:
+  GCamCdEGNP04:
+    GNP04:
+      SRR11905125: "data/batch_2/SRR11905125_{Pair}.fastq.gz"
+
+
+GCamCdEGNP05:
+  GCamCdEGNP05:
+    GNP05:
+      SRR11905124: "data/batch_2/SRR11905124_{Pair}.fastq.gz"
+
+
+GCamCaPPLA01:
+  GCamCaPPLA01:
+    PLA01:
+      SRR11859275: "data/batch_2/SRR11859275_{Pair}.fastq.gz"
+
+
+GCamSsC_SNR2:
+  GCamSsC_SNR2:
+    SNR2:
+      SRR11905123: "data/batch_2/SRR11905123_{Pair}.fastq.gz"
+
+
+GCamEtW_ETH1:
+  GCamEtW_ETH1:
+    ETH1:
+      SRR11905122: "data/batch_2/SRR11905122_{Pair}.fastq.gz"
+
+
+GCamEtW_ETH2:
+  GCamEtW_ETH2:
+    ETH2:
+      SRR11905167: "data/batch_2/SRR11905167_{Pair}.fastq.gz"
+
+
+GCamEtW_ETH3:
+  GCamEtW_ETH3:
+    ETH3:
+      SRR11905166: "data/batch_2/SRR11905166_{Pair}.fastq.gz"
+
+
+GCamUgW_MF06:
+  GCamUgW_MF06:
+    MF06:
+      SRR11905165: "data/batch_2/SRR11905165_{Pair}.fastq.gz"
+
+
+GCamUgW_MF22:
+  GCamUgW_MF22:
+    MF22:
+      SRR11905164: "data/batch_2/SRR11905164_{Pair}.fastq.gz"
+
+
+GCamUgW_MF24:
+  GCamUgW_MF24:
+    MF24:
+      SRR11905163: "data/batch_2/SRR11905163_{Pair}.fastq.gz"
+
+
+GCamCaP_RET1:
+  GCamCaP_RET1:
+    RET1:
+      SRR11905162: "data/batch_2/SRR11905162_{Pair}.fastq.gz"
+
+
+GCamCaP_RET3:
+  GCamCaP_RET3:
+    RET3:
+      SRR11905161: "data/batch_2/SRR11905161_{Pair}.fastq.gz"
+
+
+GCamCaP_RET4:
+  GCamCaP_RET4:
+    RET4:
+      SRR11905160: "data/batch_2/SRR11905160_{Pair}.fastq.gz"
+
+
+GCamCaP_RET5:
+  GCamCaP_RET5:
+    RET5:
+      SRR11905159: "data/batch_2/SRR11905159_{Pair}.fastq.gz"
+
+
+GCamCaP_RET6:
+  GCamCaP_RET6:
+    RET6:
+      SRR11905158: "data/batch_2/SRR11905158_{Pair}.fastq.gz"
+
+
+GCamCaP_TRot1:
+  GCamCaP_TRot1:
+    RETRot1:
+      SRR11905156: "data/batch_2/SRR11905156_{Pair}.fastq.gz"
+
+
+GCamCaP_TRot2:
+  GCamCaP_TRot2:
+    RETRot2:
+      SRR11905155: "data/batch_2/SRR11905155_{Pair}.fastq.gz"
+
+
+GCamKeEISC01:
+  GCamKeEISC01:
+    ISC01:
+      SRR11905154: "data/batch_2/SRR11905154_{Pair}.fastq.gz"
+
+
+GCamKeEISC04:
+  GCamKeEISC04:
+    ISC04:
+      SRR11905153: "data/batch_2/SRR11905153_{Pair}.fastq.gz"
+
+
+GCamKeEISC08:
+  GCamKeEISC08:
+    ISC08:
+      SRR11905152: "data/batch_2/SRR11905152_{Pair}.fastq.gz"
+
+
+GCamZmEP8_04:
+  GCamZmEP8_04:
+    LVNP8-04:
+       SRR11905151: "data/batch_2/SRR11905151_{Pair}.fastq.gz"
+
+ 
+GCamZmEP8_08:
+  GCamZmEP8_08:
+    LVNP8-08:
+       SRR11905150: "data/batch_2/SRR11905150_{Pair}.fastq.gz"
+
+ 
+GCamZmEP8_09:
+  GCamZmEP8_09:
+    LVNP8-09:
+       SRR11905149: "data/batch_2/SRR11905149_{Pair}.fastq.gz"
+
+ 
+GCamZmEP8_10:
+  GCamZmEP8_10:
+    LVNP8-10:
+       SRR11905148: "data/batch_2/SRR11905148_{Pair}.fastq.gz"
+
+ 
+GCamZmEP8_12:
+  GCamZmEP8_12:
+    LVNP8-12:
+       SRR11905147: "data/batch_2/SRR11905147_{Pair}.fastq.gz"
+
+ 
+GCamZmEP8_14:
+  GCamZmEP8_14:
+    LVNP8-14:
+       SRR11905145: "data/batch_2/SRR11905145_{Pair}.fastq.gz"
+
+ 
+GCamTzESGR01:
+  GCamTzESGR01:
+    SGR01:
+      SRR11905144: "data/batch_2/SRR11905144_{Pair}.fastq.gz"
+
+
+GCamTzESGR05:
+  GCamTzESGR05:
+    SGR05:
+      SRR11905143: "data/batch_2/SRR11905143_{Pair}.fastq.gz"
+
+
+GCamTzESGR07:
+  GCamTzESGR07:
+    SGR07:
+      SRR11905142: "data/batch_2/SRR11905142_{Pair}.fastq.gz"
+
+
+GCamTzESGR13:
+  GCamTzESGR13:
+    SGR13:
+      SRR11905141: "data/batch_2/SRR11905141_{Pair}.fastq.gz"
+
+
+GCamTzESGR14:
+  GCamTzESGR14:
+    SGR14:
+      SRR11905140: "data/batch_2/SRR11905140_{Pair}.fastq.gz"
+
+
+GCamNaEBNP02:
+  GCamNaEBNP02:
+    BNP02:
+      SRR11905138: "data/batch_2/SRR11905138_{Pair}.fastq.gz"
+
+
+GCamZaNKKR01:
+  GCamZaNKKR01:
+    KKR01:
+      SRR11905136: "data/batch_2/SRR11905136_{Pair}.fastq.gz"
+
+
+GCamZaNKKR08:
+  GCamZaNKKR08:
+    KKR08:
+      SRR11905134: "data/batch_2/SRR11905134_{Pair}.fastq.gz"
+
+
+GCamZmSTNP09:
+  GCamZmSTNP09:
+    MTNP09:
+      SRR11905139: "data/batch_2/SRR11905139_{Pair}.fastq.gz"
+
+
+GCamZmS_SUN3:
+  GCamZmS_SUN3:
+    SUN3:
+      SRR11905137: "data/batch_2/SRR11905137_{Pair}.fastq.gz"
+
+
+GCamBwN__V23:
+  GCamBwN__V23:
+    V23:
+      SRR11905133: "data/batch_2/SRR11905133_{Pair}.fastq.gz"
+
+
+GCamNaNENP11:
+  GCamNaNENP11:
+    ENP11:
+      SRR11905132: "data/batch_2/SRR11905132_{Pair}.fastq.gz"
+
+
+GCamNaNENP16:
+  GCamNaNENP16:
+    ENP16:
+      SRR11905131: "data/batch_2/SRR11905131_{Pair}.fastq.gz"
+
+
+GCamNaNENP19:
+  GCamNaNENP19:
+    ENP19:
+      SRR11905130: "data/batch_2/SRR11905130_{Pair}.fastq.gz"
+
+
+GCamNaNENP20:
+  GCamNaNENP20:
+    ENP20:
+      SRR11905129: "data/batch_2/SRR11905129_{Pair}.fastq.gz"
+
+
+GCamNaWNB102:
+  GCamNaWNB102:
+    HNB102:
+      SRR11905128: "data/batch_2/SRR11905128_{Pair}.fastq.gz"
+
+
+GCamNaWNB110:
+  GCamNaWNB110:
+    HNB110:
+      SRR11905127: "data/batch_2/SRR11905127_{Pair}.fastq.gz"
+

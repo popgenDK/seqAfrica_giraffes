@@ -1,0 +1,52 @@
+bams:
+  close:
+    GCamCaP2018L: batch_4/GCamCaP2018L.RothschildsGiraffe.bam
+    GCamCaP20387: batch_4/GCamCaP20387.RothschildsGiraffe.bam
+  distant:
+    GCamCaP2018L: batch_4/GCamCaP2018L.Okapi.bam
+    GCamCaP20387: batch_4/GCamCaP20387.Okapi.bam
+blocksize: 10000
+fastq:
+  1:
+    GCamCaP2018L:
+    - data/batch_4/FP200009146_L01_405_1.fq.gz
+    GCamCaP20387:
+    - data/batch_4/FP200009146_L01_406_1.fq.gz
+  2:
+    GCamCaP2018L:
+    - data/batch_4/FP200009146_L01_405_2.fq.gz
+    GCamCaP20387:
+    - data/batch_4/FP200009146_L01_406_2.fq.gz
+idxstats:
+  close:
+    GCamCaP2018L: batch_4/GCamCaP2018L.RothschildsGiraffe.idxstats.txt
+    GCamCaP20387: batch_4/GCamCaP20387.RothschildsGiraffe.idxstats.txt
+  distant:
+    GCamCaP2018L: batch_4/GCamCaP2018L.Okapi.idxstats.txt
+    GCamCaP20387: batch_4/GCamCaP20387.Okapi.idxstats.txt
+jsons:
+- batch_4/GCamCaP2018L.Okapi.json
+- batch_4/GCamCaP2018L.RothschildsGiraffe.json
+- batch_4/GCamCaP20387.Okapi.json
+- batch_4/GCamCaP20387.RothschildsGiraffe.json
+minQ: 30
+minmapQ: 30
+nblocks: 100
+outmain: batch_4.qc
+perfect_bam: batch_4/GCamCaP20387.Okapi.bam
+refs:
+  close: genomes/RothschildsGiraffe.fasta
+  close_name: RothschildsGiraffe
+  distant: genomes/Okapi.fasta
+  distant_name: Okapi
+samples:
+- GCamCaP2018L
+- GCamCaP20387
+script_dir: install/qc_workflow/workflow/scripts
+stats:
+  close:
+    GCamCaP2018L: batch_4/GCamCaP2018L.RothschildsGiraffe.stats.txt
+    GCamCaP20387: batch_4/GCamCaP20387.RothschildsGiraffe.stats.txt
+  distant:
+    GCamCaP2018L: batch_4/GCamCaP2018L.Okapi.stats.txt
+    GCamCaP20387: batch_4/GCamCaP20387.Okapi.stats.txt
